@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <meta charset="UTF-8">
+  <title>Instructions | Aadhaar Validator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #444;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #14A800;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 10;
+    }
+    nav .logo { font-size: 1.3rem; font-weight: 600; }
+    nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
+    nav ul li { margin-left: 25px; }
+    nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    nav ul li a:hover, nav ul li a.active { text-decoration: underline; color: #D7FFD9; }
+
+    /* Page content */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+    }
+
+    /* Card */
+    .card {
+      background-color: #fff;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      padding: 30px 40px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 { color: #007bff; font-size: 2rem; margin-bottom: 20px; }
+
+    ul {
+      text-align: left;
+      line-height: 1.6;
+      padding-left: 20px;
+      list-style: disc;
+      margin-bottom: 30px;
+    }
+    li { margin-bottom: 12px; color: #444; font-size: 1.05rem; }
+
+    /* Next button with left-to-right fill/refill animation */
+    .btn-next {
+      position: relative;
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 28px;
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      border-radius: 8px;
+      background-color: #007bff;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .btn-next::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #e72828;
+      z-index: -1;
+      transition: none;
+    }
+    .btn-next:hover::before {
+      animation: slideIn 0.5s forwards;
+    }
+    .btn-next:not(:hover)::before {
+      animation: slideOut 0.5s forwards;
+    }
+    @keyframes slideIn { 0% { left: -100%; } 100% { left: 0%; } }
+    @keyframes slideOut { 0% { left: 0%; } 100% { left: 100%; } }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: white;
+      padding: 15px;
+      background: #14A800;
+      border-top: 3px solid #0D7300;
+      margin-top: 40px;
+    }
+
+    /* Floating Translate Button */
+    #translateBtn {
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #14A800;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #translateBtn:hover { background-color: #0D7300; }
+
+    /* Google Translate container */
+    #google_translate_element {
+      display: none;
+      position: fixed;
+      top: 140px;
+      left: 20px;
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    #google_translate_element select {
+      width: 100%;
+      background: white;
+      color: #444;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #google_translate_element select:hover { background: #f1f1f1; }
+
+    .goog-te-gadget-icon, .goog-te-menu-value span { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">Aadhaar Validator</div>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('instructions') }}" class="active">Instructions</a></li>
+    </ul>
+  </nav>
+
+  <!-- Floating Google Translate Button -->
+  <button id="translateBtn" title="Choose Language">🌐</button>
+  <div id="google_translate_element"></div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="card">
+      <h1>Instructions</h1>
+      <ul>
+        <li>Ensure your Aadhaar card image is clear and readable.</li>
+        <li>Supported formats: JPG, JPEG, PNG.</li>
+        <li>Click the “Scan Aadhaar” button below to begin validation.</li>
+      </ul>
+      <a href="{{ url_for('index') }}" class="btn-next">Next →</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Aadhaar Validator | Secure Identity Validation
+  </footer>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,ta,te,ml,kn,gu,bn,mr,pa,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+
+    const translateBtn = document.getElementById('translateBtn');
+    const translateElement = document.getElementById('google_translate_element');
+    translateBtn.addEventListener('click', () => {
+      translateElement.style.display = translateElement.style.display === 'block' ? 'none' : 'block';
+    });
+
+    setInterval(() => {
+      const banner = document.querySelector('iframe.goog-te-banner-frame');
+      if (banner) banner.style.display = 'none';
+    }, 500);
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

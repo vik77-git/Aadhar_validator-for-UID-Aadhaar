@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <meta charset="UTF-8">
+  <title>Aadhaar Validator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #444;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #14A800;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 10;
+      position: relative;
+    }
+    nav .logo { font-size: 1.3rem; font-weight: 600; }
+    nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
+    nav ul li { margin-left: 25px; }
+    nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    nav ul li a:hover, nav ul li a.active { text-decoration: underline; color: #D7FFD9; }
+
+    /* Container */
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 50px 20px;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 35px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 { font-size: 2rem; color: #007bff; margin-bottom: 15px; }
+    .subtitle { font-size: 1.15rem; margin-bottom: 30px; color: #444; }
+    .filename { margin-top: 8px; font-size: 0.95rem; color: #666; }
+
+    /* Button base style with left-to-right hover animation */
+    .btn {
+      position: relative;
+      display: inline-block;
+      padding: 12px 28px;
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 20px;
+      cursor: pointer;
+      background-color: #007bff;
+      z-index: 0;
+      transition: color 0.3s;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #e72828;
+      z-index: -1;
+    }
+    .btn:hover::before { animation: slideIn 0.5s forwards; }
+    .btn:not(:hover)::before { animation: slideOut 0.5s forwards; }
+    @keyframes slideIn { 0% { left: -100%; } 100% { left: 0; } }
+    @keyframes slideOut { 0% { left: 0; } 100% { left: 100%; } }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: white;
+      padding: 15px;
+      background: #14A800;
+      border-top: 3px solid #0D7300;
+      margin-top: 40px;
+    }
+
+    /* Results Card */
+    .results-card {
+      margin-top: 30px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .results-card h3 { margin-bottom: 15px; color: #007bff; }
+    .results-card p { margin: 8px 0; font-size: 1rem; }
+    .photo-section img { max-width: 150px; border-radius: 8px; margin-top: 10px; }
+
+    /* Floating Translate Button */
+    #translateBtn {
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: #14A800;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #translateBtn:hover { background-color: #0D7300; }
+
+    /* Google Translate container round */
+    #google_translate_element {
+      display: none;
+      position: fixed;
+      top: 145px;
+      left: 20px;
+      z-index: 1000;
+      background: white;
+      border-radius: 50px;
+      padding: 10px 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    #google_translate_element select {
+      width: 100%;
+      background: white;
+      color: #444;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">Aadhaar Validator</div>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('instructions') }}" class="active">Instructions</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h1>Aadhaar Card Verification System</h1>
+      <p class="subtitle">Upload an Aadhaar card image for validation</p>
+
+      <form id="uploadForm" action="/scan" method="post" enctype="multipart/form-data">
+        <label class="btn">
+          <input type="file" name="file" id="fileInput" accept=".jpg,.jpeg,.png" style="display:none;">
+          Choose Aadhaar File
+        </label>
+        <p id="fileName" class="filename">No file chosen</p>
+        <button type="submit" class="btn">Scan Aadhaar</button>
+      </form>
+
+      {% if extracted %}
+      <div class="results-card">
+        <h3>Extracted Aadhaar Data</h3>
+        <p><strong>Aadhaar Number:</strong> {{ extracted.aadhaar_number }} — <span class="status">{{ validations.aadhaar_number }}</span></p>
+        <p><strong>Name:</strong> {{ extracted.name }} — <span class="status">{{ validations.name }}</span></p>
+        <p><strong>DOB:</strong> {{ extracted.dob }} — <span class="status">{{ validations.dob }}</span></p>
+
+        {% if photo_image %}
+        <div class="photo-section">
+          <h4>Detected Photo</h4>
+          <img src="{{ photo_image }}" alt="Aadhaar Photo">
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Aadhaar Validator | Secure Identity Validation
+  </footer>
+
+  <!-- Google Translate Round Button -->
+  <button id="translateBtn" title="Choose Language">🌐</button>
+  <div id="google_translate_element"></div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileName = document.getElementById('fileName');
+    const form = document.getElementById('uploadForm');
+
+    fileInput.addEventListener('change', e => {
+      fileName.textContent = e.target.files.length > 0 ? `Uploaded File: ${e.target.files[0].name}` : 'No file chosen';
+    });
+
+    form.addEventListener('submit', e => {
+      if (!fileInput.value) {
+        e.preventDefault();
+        Swal.fire({
+          icon: 'warning',
+          title: 'No file selected',
+          text: 'Please choose an Aadhaar card image before scanning.',
+          confirmButtonColor: '#007bff'
+        });
+      } else {
+        Swal.fire({
+          title: 'Scanning Aadhaar...',
+          text: 'The file is being processed. Please wait.',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+      }
+    });
+
+    // Google Translate Toggle
+    const translateBtn = document.getElementById('translateBtn');
+    const translateElement = document.getElementById('google_translate_element');
+    translateBtn.addEventListener('click', () => {
+      translateElement.style.display = translateElement.style.display === 'block' ? 'none' : 'block';
+    });
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,ta,te,ml,kn,gu,bn,mr,pa,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <meta charset="UTF-8">
+  <title>About | Aadhaar Validator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #444;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #14A800;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 1001;
+    }
+    nav .logo { font-size: 1.3rem; font-weight: 600; }
+    nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
+    nav ul li { margin-left: 25px; }
+    nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    nav ul li a:hover, nav ul li a.active { text-decoration: underline; color: #D7FFD9; }
+
+    /* Container/Card */
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 50px 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 35px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 { color: #007bff; font-size: 2rem; margin-bottom: 15px; }
+    p { font-size: 1.05rem; max-width: 600px; margin: 15px auto; line-height: 1.6; }
+
+    /* Next button with hover animation */
+    .btn-next {
+      position: relative;
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 28px;
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      border-radius: 8px;
+      background-color: #007bff;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .btn-next::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #e72828;
+      z-index: -1;
+      transition: none;
+    }
+    .btn-next:hover::before { animation: slideIn 0.5s forwards; }
+    .btn-next:not(:hover)::before { animation: slideOut 0.5s forwards; }
+    @keyframes slideIn { 0% { left: -100%; } 100% { left: 0%; } }
+    @keyframes slideOut { 0% { left: 0%; } 100% { left: 100%; } }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: white;
+      padding: 15px;
+      background: #14A800;
+      border-top: 3px solid #0D7300;
+    }
+
+    /* Floating Translate Button */
+    #translateBtn {
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: #14A800;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #translateBtn:hover { background-color: #0D7300; }
+
+    /* Google Translate container round */
+    #google_translate_element {
+      display: none;
+      position: fixed;
+      top: 145px;
+      left: 20px;
+      z-index: 1000;
+      background: white;
+      border-radius: 50px;
+      padding: 10px 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    #google_translate_element select {
+      width: 100%;
+      background: white;
+      color: #444;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #google_translate_element select:hover { background: #f1f1f1; }
+    .goog-te-gadget-icon, .goog-te-menu-value span { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Aadhaar Validator</div>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+      <li><a href="{{ url_for('instructions') }}">Instructions</a></li>
+    </ul>
+  </nav>
+
+  <!-- Google Translate Button -->
+  <button id="translateBtn" title="Choose Language">🌐</button>
+  <div id="google_translate_element"></div>
+
+  <div class="container">
+    <div class="card">
+      <h1>About</h1>
+      <p>
+        Aadhaar Validator is an intelligent web application built to verify Aadhaar card authenticity using AI and OCR technologies.
+        It ensures accuracy in identity validation while maintaining data privacy and security.
+      </p>
+      <a href="{{ url_for('instructions') }}" class="btn-next">Next →</a>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Aadhaar Validator | Secure Identity Validation
+  </footer>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,ta,te,ml,kn,gu,bn,mr,pa,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+
+    const translateBtn = document.getElementById('translateBtn');
+    const translateElement = document.getElementById('google_translate_element');
+    translateBtn.addEventListener('click', () => {
+      translateElement.style.display = translateElement.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Remove Google Translate top banner
+    setInterval(() => {
+      const banner = document.querySelector('iframe.goog-te-banner-frame');
+      if (banner) banner.style.display = 'none';
+    }, 500);
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
