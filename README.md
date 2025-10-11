@@ -15,7 +15,7 @@ It automatically detects Aadhaar number, name, date of birth, and photo, then pe
 
 ---
 
-## 🚀 Features
+## Features :
 - Upload Aadhaar card image (`.jpg`, `.jpeg`, `.png`)
 - YOLOv8 model detects Aadhaar card fields (number, name, DOB, photo)
 - OCR (Tesseract) extracts text from detected fields
@@ -26,4 +26,5 @@ It automatically detects Aadhaar number, name, date of birth, and photo, then pe
 
 ---
 
-## 🛠️ Project Structure
+
+## Project Structure :
