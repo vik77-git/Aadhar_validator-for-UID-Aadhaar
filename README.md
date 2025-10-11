@@ -10,7 +10,7 @@ pinned: false
 
 # 🪪 Aadhaar Card Verification System (Flask)
 
-This Space is a **Flask-based web application** for validating Aadhaar cards using **YOLOv8 + Tesseract OCR**.  
+This codebase is a **Flask-based web application** for validating Aadhaar cards using **YOLOv8 + Tesseract OCR**.  
 It automatically detects Aadhaar number, name, date of birth, and photo, then performs validation checks like **Verhoeff algorithm** for Aadhaar number and DOB correctness.
 
 ---
@@ -28,3 +28,4 @@ It automatically detects Aadhaar number, name, date of birth, and photo, then pe
 
 
 ## Project Structure :
+
